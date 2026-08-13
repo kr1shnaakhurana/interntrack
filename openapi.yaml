@@ -1,0 +1,311 @@
+openapi: 3.0.3
+info:
+  title: InternTrack REST API
+  description: >
+    Scalable Job & Internship Discovery and Application Tracking Platform API Architecture.
+    Supports Opportunity Discovery, Verified Organization Publishing, Application & Interview Tracking,
+    and Background External Job Aggregation.
+  version: 1.0.0
+servers:
+  - url: http://localhost/api/v1
+    description: Local API Server
+  - url: https://api.interntrack.com/api/v1
+    description: Production API Server
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new Student, Company, or Admin user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password, role]
+              properties:
+                name: { type: string, example: "Alice Student" }
+                email: { type: string, example: "alice@university.edu" }
+                password: { type: string, example: "secret123" }
+                role: { type: string, enum: [student, company, admin], example: "student" }
+                roll_no: { type: string, example: "CS2026-001" }
+                program: { type: string, example: "B.Tech" }
+                department: { type: string, example: "Computer Science" }
+                year: { type: string, example: "4th Year" }
+                company_name: { type: string, example: "Acme Technologies" }
+                website: { type: string, example: "https://acme.com" }
+                sector: { type: string, enum: [private, government, ngo, other] }
+      responses:
+        '201':
+          description: User registered successfully
+        '422':
+          description: Validation error
+
+  /auth/login:
+    post:
+      summary: Authenticate user and issue Sanctum bearer token
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, example: "alice@university.edu" }
+                password: { type: string, example: "secret123" }
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      summary: Get authenticated user profile
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Authenticated user details
+
+  /jobs:
+    get:
+      summary: Search, filter, and paginate active job listings
+      tags: [Jobs]
+      parameters:
+        - name: keyword
+          in: query
+          schema: { type: string }
+        - name: job_type
+          in: query
+          schema: { type: string, enum: [internship, full-time, part-time, research, fellowship, government, other] }
+        - name: location
+          in: query
+          schema: { type: string }
+        - name: is_remote
+          in: query
+          schema: { type: boolean }
+        - name: company_id
+          in: query
+          schema: { type: string, format: uuid }
+        - name: verified_only
+          in: query
+          schema: { type: boolean }
+        - name: sector
+          in: query
+          schema: { type: string, enum: [private, government, ngo, other] }
+        - name: skill
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: per_page
+          in: query
+          schema: { type: integer, default: 15 }
+      responses:
+        '200':
+          description: Paginated job collection
+
+  /jobs/{id}:
+    get:
+      summary: Get single job details
+      tags: [Jobs]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Job details
+        '404':
+          description: Job not found
+
+  /company/jobs:
+    post:
+      summary: Post a direct company job listing
+      tags: [Company Jobs]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description, job_type]
+              properties:
+                title: { type: string }
+                description: { type: string }
+                job_type: { type: string, enum: [internship, full-time, part-time, research, fellowship, government, other] }
+                location: { type: string }
+                is_remote: { type: boolean }
+                stipend_salary: { type: string }
+                deadline: { type: string, format: date-time }
+                skills_required: { type: string }
+      responses:
+        '201':
+          description: Job created
+
+  /applications:
+    post:
+      summary: Submit a job application
+      tags: [Applications]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [job_id]
+              properties:
+                job_id: { type: string, format: uuid }
+                cover_letter_url: { type: string }
+                expected_salary: { type: string }
+      responses:
+        '201':
+          description: Application submitted
+        '400':
+          description: Duplicate application attempt
+
+    get:
+      summary: List user or company applications
+      tags: [Applications]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Application list
+
+  /applications/{id}/status:
+    post:
+      summary: Update application status with audit trail
+      tags: [Applications]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [saved, applied, shortlisted, interview, selected, rejected] }
+                remarks: { type: string }
+      responses:
+        '200':
+          description: Status updated
+
+  /applications/{id}/interviews:
+    post:
+      summary: Schedule an interview round for an application
+      tags: [Interviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                round_name: { type: string }
+                interview_type: { type: string, enum: [phone, online, offline, technical, hr] }
+                scheduled_at: { type: string, format: date-time }
+                interviewer: { type: string }
+      responses:
+        '201':
+          description: Interview scheduled
+
+  /interviews/{id}:
+    put:
+      summary: Update interview result (final round cleared updates application to selected)
+      tags: [Interviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [result]
+              properties:
+                result: { type: string, enum: [pending, cleared, rejected] }
+                is_final_round: { type: boolean }
+                notes: { type: string }
+      responses:
+        '200':
+          description: Result updated
+
+  /admin/company-verifications:
+    get:
+      summary: List company verification requests (Admin only)
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Verification request list
+
+  /admin/company-verifications/{id}/approve:
+    post:
+      summary: Approve company verification request (Admin only)
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Verification approved
+
+  /admin/ingest-external-jobs:
+    post:
+      summary: Manually trigger external job aggregator ingestion pipeline
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source: { type: string, default: "sample_external_feed" }
+      responses:
+        '200':
+          description: Ingestion metrics summary
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum Token
