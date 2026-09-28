@@ -35,7 +35,10 @@
                     <div class="row g-3 mb-4 pb-4 border-bottom">
                         <div class="col-12 col-sm-6">
                             <small class="text-muted d-block text-uppercase fw-medium">Location</small>
-                            <span class="fw-semibold text-dark">{{ $job->location ?? 'Not Specified' }} {{ $job->is_remote ? '<span class="badge bg-success bg-opacity-10 text-success ms-2 rounded-pill px-2 py-1">Remote</span>' : '' }}</span>
+                            <span class="fw-semibold text-dark">{{ $job->location ?? 'Not Specified' }}</span>
+                            @if($job->is_remote)
+                                <span class="badge bg-success bg-opacity-10 text-success ms-2 rounded-pill px-2 py-1">Remote</span>
+                            @endif
                         </div>
                         <div class="col-12 col-sm-6">
                             <small class="text-muted d-block text-uppercase fw-medium">Stipend / Salary</small>
