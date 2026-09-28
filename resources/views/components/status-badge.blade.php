@@ -27,14 +27,14 @@
             $badgeClass = 'bg-warning text-dark';
             break;
         case 'internship':
-            $badgeClass = 'bg-indigo text-white';
+            $badgeClass = 'bg-info';
             break;
         case 'full-time':
             $badgeClass = 'bg-dark';
             break;
         case 'research':
         case 'fellowship':
-            $badgeClass = 'bg-purple text-white';
+            $badgeClass = 'bg-purple';
             break;
         case 'government':
             $badgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
@@ -42,4 +42,4 @@
     }
 @endphp
 
-<span class="badge {{ $badgeClass }} px-2 py-1">{{ $label }}</span>
+<span class="badge {{ $badgeClass }} px-2 py-1 rounded-pill">{{ $label }}</span>

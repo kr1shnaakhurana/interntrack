@@ -1,50 +1,51 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'Interview Schedule - InternTrack')
-@section('page_title', 'Scheduled Interview Rounds')
 
 @section('content')
-<div class="card card-custom bg-white p-4">
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+    <h1 class="page-title">Interview Schedule</h1>
+</div>
+
+<div class="card border-0 shadow-sm">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover mb-0 align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>Round</th>
-                    <th>Job Title</th>
-                    <th>Company</th>
-                    <th>Type</th>
-                    <th>Date & Time</th>
-                    <th>Result</th>
-                    <th>Meeting Link</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Round</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Job Title</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Company</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Type</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Date &amp; Time</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Result</th>
+                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Meeting Link</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($interviews as $interview)
                     <tr>
-                        <td>
-                            <span class="fw-bold">Round {{ $interview->round_number }}</span>
+                        <td class="px-4 py-4">
+                            <span class="fw-semibold">Round {{ $interview->round_number }}</span>
                             <small class="d-block text-muted">{{ $interview->round_name }}</small>
                         </td>
-                        <td>
+                        <td class="px-4 py-4">
                             <a href="/applications/{{ $interview->application_id }}" class="fw-bold text-dark text-decoration-none">
                                 {{ $interview->application->job->title ?? 'Position' }}
                             </a>
                         </td>
-                        <td class="fw-semibold text-secondary">
-                            {{ $interview->application->job->company->name ?? 'Company' }}
+                        <td class="px-4 py-4 fw-medium text-secondary">{{ $interview->application->job->company->name ?? 'Company' }}</td>
+                        <td class="px-4 py-4">
+                            <span class="badge bg-light text-dark rounded-pill px-3 py-2 small">{{ ucfirst($interview->interview_type) }}</span>
                         </td>
-                        <td>
-                            <span class="badge bg-light text-dark border">{{ ucfirst($interview->interview_type) }}</span>
-                        </td>
-                        <td class="small">
+                        <td class="px-4 py-4 small text-muted">
                             {{ $interview->scheduled_at ? \Carbon\Carbon::parse($interview->scheduled_at)->format('M d, Y h:i A') : 'TBD' }}
                         </td>
-                        <td>
+                        <td class="px-4 py-4">
                             <x-status-badge :status="$interview->result" />
                         </td>
-                        <td>
+                        <td class="px-4 py-4">
                             @if($interview->location_meeting_link)
-                                <a href="{{ $interview->location_meeting_link }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ $interview->location_meeting_link }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-4">
                                     <i class="bi bi-box-arrow-up-right me-1"></i> Join
                                 </a>
                             @else
@@ -54,15 +55,18 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-4">
-                            <x-empty-state title="No Scheduled Interviews" message="You will see your interview rounds here once shortlisted by employers." />
+                        <td colspan="7" class="text-center py-5">
+                            <x-empty-state title="No Scheduled Interviews" message="You will see your interview rounds here once shortlisted by employers." icon="bi-calendar-event" />
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-
-    <x-pagination :paginator="$interviews" />
+    @if($interviews->hasPages())
+        <div class="card-footer bg-white border-0 py-3">
+            <x-pagination :paginator="$interviews" />
+        </div>
+    @endif
 </div>
 @endsection

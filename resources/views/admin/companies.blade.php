@@ -4,9 +4,9 @@
 @section('page_title', 'All Companies')
 
 @section('content')
-<div class="card card-custom bg-white p-3">
+<div class="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="w-full rounded-lg overflow-auto border border-gray-200">
             <thead class="table-light">
                 <tr>
                     <th>Company Name</th>
@@ -21,32 +21,32 @@
                 @forelse($companies as $company)
                     <tr>
                         <td>
-                            <div class="fw-bold text-dark">{{ $company->name }}</div>
+                            <div class="font-bold text-gray-900">{{ $company->name }}</div>
                             @if($company->website)
-                                <a href="{{ $company->website }}" target="_blank" class="small text-primary text-decoration-none">
+                                <a href="{{ $company->website }}" target="_blank" class="small text-indigo-600 text-decoration-none">
                                     {{ $company->website }}
                                 </a>
                             @endif
                         </td>
-                        <td class="small text-muted text-capitalize">{{ $company->sector ?? '—' }}</td>
+                        <td class="text-muted small text-capitalize">{{ $company->sector ?? '�' }}</td>
                         <td>
                             @if($company->latestVerification)
                                 <x-status-badge :status="$company->latestVerification->status" />
                             @else
-                                <span class="badge bg-light text-muted border">Not Submitted</span>
+                                <span class="badge bg-gray-100 text-muted rounded-pill border border-gray-200">Not Submitted</span>
                             @endif
                         </td>
                         <td>
-                            <span class="badge bg-light text-dark border">{{ $company->jobs->count() }} jobs</span>
+                            <span class="bg-gray-100 text-gray-600 rounded-pill px-2 py-1 small border border-gray-200">{{ $company->jobs->count() }} jobs</span>
                         </td>
                         <td>
                             @if($company->is_external)
-                                <span class="badge bg-secondary-subtle text-secondary">External</span>
+                                <span class="badge bg-gray-100 text-gray-500 rounded-pill px-2 py-1 small border border-gray-200">External</span>
                             @else
-                                <span class="badge bg-primary-subtle text-primary">Direct</span>
+                                <span class="badge bg-indigo-100 text-indigo-800 rounded-pill px-2 py-1 small border border-indigo-100">Direct</span>
                             @endif
                         </td>
-                        <td class="small text-muted">{{ $company->created_at->format('M d, Y') }}</td>
+                        <td class="text-muted small">{{ $company->created_at->format('M d, Y') }}</td>
                     </tr>
                 @empty
                     <tr>

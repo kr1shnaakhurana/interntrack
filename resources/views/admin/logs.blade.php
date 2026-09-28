@@ -4,9 +4,9 @@
 @section('page_title', 'Admin Audit Logs')
 
 @section('content')
-<div class="card card-custom bg-white p-3">
+<div class="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="w-full rounded-lg overflow-auto border border-gray-200">
             <thead class="table-light">
                 <tr>
                     <th>Admin</th>
@@ -20,18 +20,18 @@
             <tbody>
                 @forelse($logs as $log)
                     <tr>
-                        <td class="fw-semibold">{{ $log->admin->user->name ?? 'System' }}</td>
+                        <td class="font-semibold text-gray-900">{{ $log->admin->user->name ?? 'System' }}</td>
                         <td>
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2">
+                            <span class="badge bg-indigo-100 text-indigo-800 rounded-pill px-2 border border-indigo-100">
                                 {{ str_replace('_', ' ', strtoupper($log->action)) }}
                             </span>
                         </td>
-                        <td class="small text-muted">{{ $log->entity_type ?? '—' }}</td>
-                        <td class="small text-muted">{{ $log->entity_id ?? '—' }}</td>
-                        <td class="small text-secondary" style="max-width: 250px;">
-                            {{ Str::limit($log->details ?? '—', 80) }}
+                        <td class="small text-muted">{{ $log->entity_type ?? '?' }}</td>
+                        <td class="small text-muted">{{ $log->entity_id ?? '?' }}</td>
+                        <td class="small text-gray-500 cell-medium">
+                            {{ Str::limit($log->details ?? '?', 80) }}
                         </td>
-                        <td class="small text-muted">{{ $log->created_at->format('M d, Y h:i A') }}</td>
+                        <td class="text-muted small">{{ $log->created_at->format('M d, Y h:i A') }}</td>
                     </tr>
                 @empty
                     <tr>
@@ -46,3 +46,4 @@
     <x-pagination :paginator="$logs" />
 </div>
 @endsection
+

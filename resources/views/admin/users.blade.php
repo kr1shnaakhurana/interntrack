@@ -4,9 +4,9 @@
 @section('page_title', 'Platform User Directory')
 
 @section('content')
-<div class="card card-custom bg-white p-3">
+<div class="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="w-full rounded-lg overflow-auto border border-gray-200">
             <thead class="table-light">
                 <tr>
                     <th>Name</th>
@@ -20,10 +20,10 @@
             <tbody>
                 @forelse($users as $user)
                     <tr>
-                        <td class="fw-bold text-dark">{{ $user->name }}</td>
+                        <td class="font-bold text-gray-900">{{ $user->name }}</td>
                         <td class="small text-muted">{{ $user->email }}</td>
                         <td>
-                            <span class="badge {{ $user->role === 'admin' ? 'bg-danger' : ($user->role === 'company' ? 'bg-dark' : 'bg-primary') }}">
+                            <span class="badge {{ $user->role === 'admin' ? 'bg-red-600' : ($user->role === 'company' ? 'bg-indigo-500 text-white' : 'bg-indigo-600') }}">
                                 {{ ucfirst($user->role) }}
                             </span>
                         </td>
@@ -33,14 +33,14 @@
                             @elseif($user->company)
                                 {{ $user->company->name }}
                                 @if($user->company->latestVerification?->status === 'approved')
-                                    <i class="bi bi-patch-check-fill text-success ms-1" title="Verified"></i>
+                                    <i class="bi bi-patch-check-fill text-indigo-500 ms-1" title="Verified"></i>
                                 @endif
                             @else
                                 Platform Admin
                             @endif
                         </td>
                         <td>
-                            <span class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }}">
+                            <span class="badge {{ $user->is_active ? 'bg-indigo-100 text-indigo-800 rounded-pill' : 'bg-red-600 rounded-pill' }}">
                                 {{ $user->is_active ? 'Active' : 'Suspended' }}
                             </span>
                         </td>
@@ -55,3 +55,7 @@
     <x-pagination :paginator="$users" />
 </div>
 @endsection
+
+
+
+

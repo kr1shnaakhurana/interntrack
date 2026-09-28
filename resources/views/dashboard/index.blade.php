@@ -1,67 +1,143 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'Student Dashboard - InternTrack')
-@section('page_title', 'Student Dashboard')
 
 @section('content')
-<!-- Welcome Banner -->
-<div class="card card-stat bg-primary text-white p-4 mb-4" style="background: linear-gradient(135deg, #4f46e5, #7c3aed);">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h3 class="fw-bold mb-1">Welcome back, {{ auth()->user()->name }} 👋</h3>
-            <p class="mb-0 opacity-90">Track your application pipeline, interview schedules, and saved opportunities.</p>
-        </div>
-        <a href="/jobs" class="btn btn-light fw-bold text-primary shadow-sm px-4">Find New Jobs</a>
-    </div>
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
 </div>
 
-<!-- Metric Cards -->
-<div class="row g-3 mb-5">
-    <div class="col-md-3">
-        <div class="card card-stat p-3 bg-white border-start border-primary border-4">
-            <div class="text-muted small fw-semibold">TOTAL APPLICATIONS</div>
-            <div class="display-6 fw-bold text-dark mt-1">{{ $totalApplications }}</div>
-            <a href="/applications" class="small text-primary text-decoration-none mt-2 d-inline-block">View All Applications &rarr;</a>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-stat p-3 bg-white border-start border-warning border-4">
-            <div class="text-muted small fw-semibold">IN PROGRESS</div>
-            <div class="display-6 fw-bold text-dark mt-1">{{ $inProgressApplications }}</div>
-            <span class="small text-muted mt-2 d-inline-block">Active review status</span>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-stat p-3 bg-white border-start border-success border-4">
-            <div class="text-muted small fw-semibold">UPCOMING INTERVIEWS</div>
-            <div class="display-6 fw-bold text-dark mt-1">{{ $upcomingInterviewsCount }}</div>
-            <a href="/interviews" class="small text-success text-decoration-none mt-2 d-inline-block">View Interview Rounds &rarr;</a>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-stat p-3 bg-white border-start border-info border-4">
-            <div class="text-muted small fw-semibold">SAVED JOBS</div>
-            <div class="display-6 fw-bold text-dark mt-1">{{ $savedJobsCount }}</div>
-            <a href="/saved-jobs" class="small text-info text-decoration-none mt-2 d-inline-block">View Saved Items &rarr;</a>
+<div class="card greeting-banner border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+            <div class="d-flex align-items-center gap-3 min-w-0">
+                @php
+                    $initials = collect(explode(' ', trim(auth()->user()->name)))->filter()->take(2)->map(fn($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
+                @endphp
+                <div class="greeting-avatar rounded-circle flex-shrink-0">
+                    {{ $initials ?: 'ST' }}
+                </div>
+                <div class="text-truncate">
+                    <h2 class="h5 fw-bold text-white mb-1 text-truncate">Welcome back, {{ auth()->user()->name }}</h2>
+                    <p class="greeting-subtitle mb-0 text-white text-truncate">Track your applications, interviews, and saved opportunities.</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <a href="/profile" class="btn-ghost-light btn btn-sm fw-medium rounded-pill px-4 py-2">Complete Profile</a>
+                <a href="/jobs" class="btn btn-light btn-sm fw-medium rounded-pill px-4 py-2">Find New Jobs</a>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Recent Opportunities Section -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="fw-bold m-0">Recent Opportunities</h5>
-    <a href="/jobs" class="btn btn-sm btn-outline-primary fw-semibold">Browse All</a>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Applications</span>
+                    <div class="bg-primary-light text-primary rounded-3 p-2">
+                        <i class="bi bi-file-earmark-text fs-5"></i>
+                    </div>
+                </div>
+                <div class="display-6 fw-bold text-dark mb-2">{{ $totalApplications }}</div>
+                <a href="/applications" class="small text-primary text-decoration-none fw-medium">View All Applications &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">In Progress</span>
+                    <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-2">
+                        <i class="bi bi-hourglass-split fs-5"></i>
+                    </div>
+                </div>
+                <div class="display-6 fw-bold text-dark mb-2">{{ $inProgressApplications }}</div>
+                <a href="/applications?status=in_progress" class="small text-dark-yellow text-decoration-none fw-medium">Active review status &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Upcoming Interviews</span>
+                    <div class="bg-success bg-opacity-10 text-success rounded-3 p-2">
+                        <i class="bi bi-calendar-check fs-5"></i>
+                    </div>
+                </div>
+                <div class="display-6 fw-bold text-dark mb-2">{{ $upcomingInterviewsCount }}</div>
+                <a href="/interviews" class="small text-success text-decoration-none fw-medium">View Interview Rounds &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Saved Jobs</span>
+                    <div class="bg-info bg-opacity-10 text-info rounded-3 p-2">
+                        <i class="bi bi-bookmark fs-5"></i>
+                    </div>
+                </div>
+                <div class="display-6 fw-bold text-dark mb-2">{{ $savedJobsCount }}</div>
+                <a href="/saved-jobs" class="small text-dark-blue text-decoration-none fw-medium">View Saved Items &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+    <h5 class="fw-bold text-dark mb-0">Recent Opportunities</h5>
+    <div>
+        <a href="/jobs" class="btn btn-outline-primary btn-sm rounded-pill px-4">Browse All</a>
+    </div>
 </div>
 
 <div class="row g-4">
     @forelse($recentJobs as $job)
-        <div class="col-md-4">
+        <div class="col-12 col-md-6 col-lg-4">
             <x-job-card :job="$job" />
         </div>
     @empty
         <div class="col-12">
-            <x-empty-state title="No Recent Opportunities" message="Check back later for new job postings." />
+            <x-empty-state title="No Recent Opportunities" message="Check back later for new job postings." icon="bi-briefcase" />
         </div>
     @endforelse
 </div>
 @endsection
+
+@push('styles')
+<style>
+    .greeting-banner {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: var(--radius-lg);
+    }
+    .greeting-avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .greeting-subtitle {
+        opacity: 0.75;
+        font-size: 0.875rem;
+    }
+    .btn-ghost-light {
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .text-dark-yellow { color: #b45309 !important; }
+    .text-dark-yellow:hover { color: #92400e !important; }
+    .text-dark-blue { color: #0369a1 !important; }
+    .text-dark-blue:hover { color: #024d75 !important; }
+</style>
+@endpush

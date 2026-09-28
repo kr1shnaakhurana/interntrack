@@ -4,476 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InternTrack API Playground & Dev Console</title>
-    <!-- Modern Google Font: Inter -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #090d16;
-            --bg-card: #111827;
-            --bg-sidebar: #0f172a;
-            --border-color: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --accent-purple: #a855f7;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --code-bg: #030712;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            width: 320px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-
-        .brand-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
-        }
-
-        .brand-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .auth-bar {
-            padding: 16px;
-            background: rgba(15, 23, 42, 0.8);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .auth-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .user-quick-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-        }
-
-        .btn-quick {
-            background: #1e293b;
-            color: #cbd5e1;
-            border: 1px solid #334155;
-            padding: 6px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .btn-quick:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .token-status {
-            margin-top: 10px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #020617;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--danger);
-        }
-
-        .status-dot.active {
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-        }
-
-        .nav-sections {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-        }
-
-        .nav-group-title {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin: 16px 8px 8px 8px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.15s;
-            margin-bottom: 2px;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: #1e293b;
-            color: white;
-        }
-
-        .nav-item.active {
-            border-left: 3px solid var(--primary);
-            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), transparent);
-        }
-
-        .method-badge {
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .method-GET { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .method-POST { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-        .method-PUT { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-        .method-DELETE { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-
-        /* Main Workspace */
-        .main-workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-dark);
-            overflow: hidden;
-        }
-
-        .top-bar {
-            padding: 16px 24px;
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .endpoint-selector {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            max-width: 800px;
-        }
-
-        .method-select {
-            background: #020617;
-            color: white;
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-
-        .url-input {
-            flex: 1;
-            background: #020617;
-            color: #38bdf8;
-            border: 1px solid var(--border-color);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-        }
-
-        .btn-send {
-            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
-            color: white;
-            border: none;
-            padding: 9px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-send:hover {
-            opacity: 0.9;
-        }
-
-        .workspace-split {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background-color: var(--border-color);
-            overflow: hidden;
-        }
-
-        .pane {
-            background-color: var(--bg-dark);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .pane-header {
-            padding: 12px 20px;
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .editor-container {
-            flex: 1;
-            padding: 16px;
-            overflow: auto;
-        }
-
-        textarea.json-editor {
-            width: 100%;
-            height: 100%;
-            background: var(--code-bg);
-            color: #e2e8f0;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 14px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-        }
-
-        .response-viewer {
-            flex: 1;
-            background: var(--code-bg);
-            margin: 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            overflow: auto;
-            white-space: pre-wrap;
-            color: #38bdf8;
-        }
-
-        .response-status {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .status-200, .status-201 { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .status-400, .status-401, .status-403, .status-422 { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-
-        .time-badge {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-    </style>
+    @stack('styles')
 </head>
-<body>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-inter">
 
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="brand-header">
-            <div class="brand-title">
-                🚀 InternTrack API
-            </div>
-            <div class="brand-subtitle">Dev Console & API Tester</div>
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+        <div class="p-4 border-b border-gray-700">
+            <div class="text-indigo-400 text-sm font-medium uppercase tracking-wider mb-2">InternTrack API</div>
+            <div class="text-gray-400 text-xs uppercase tracking-wider">Dev Console & API Tester</div>
         </div>
 
-        <!-- Quick User Switcher -->
-        <div class="auth-bar">
-            <div class="auth-label">Quick Login / Identity</div>
-            <div class="user-quick-buttons">
-                <button class="btn-quick" onclick="quickLogin('admin@interntrack.com', 'admin123')">👑 Admin</button>
-                <button class="btn-quick" onclick="quickLogin('aarav@university.edu', 'student123')">🎓 Student</button>
-                <button class="btn-quick" onclick="quickLogin('hr@nexus.io', 'company123')">🏢 Company</button>
+        <!-- User switcher -->
+        <div class="p-4 bg-gray-700 border-b border-gray-700">
+            <div class="text-gray-400 text-xs uppercase tracking-wider mb-2">Quick Login / Identity</div>
+            <div class="grid grid-cols-3 gap-2 text-xs font-medium text-gray-300">
+                <button class="btn-rounded bg-gray-600 px-2 py-1.5" onclick="quickLogin('admin@interntrack.com', 'admin123')">👑 Admin</button>
+                <button class="btn-rounded bg-gray-600 px-2 py-1.5" onclick="quickLogin('aarav@university.edu', 'student123')">🎓 Student</button>
+                <button class="btn-rounded bg-gray-600 px-2 py-1.5" onclick="quickLogin('hr@nexus.io', 'company123')">🏢 Company</button>
             </div>
-            <div class="token-status">
-                <span id="active-user-label" style="color: #94a3b8;">Not Logged In</span>
-                <span class="status-dot" id="auth-status-dot"></span>
+            <div class="mt-2 text-gray-500 text-xs" id="active-user-label">Not Logged In</div>
+            <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-gray-300 status-dot"></span>
+                <span id="auth-status-dot" class="opacity-50">Not Logged In</span>
             </div>
         </div>
 
-        <!-- API Endpoint List -->
-        <div class="nav-sections">
+        <!-- Endpoints -->
+        <div class="p-4 flex-1 overflow-y-auto">
             
-            <div class="nav-group-title">Authentication & User</div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/auth/login', samplePayloads.login)">
-                <span class="method-badge method-POST">POST</span> Auth Login
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/auth/register', samplePayloads.register)">
-                <span class="method-badge method-POST">POST</span> Register Student
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/auth/me', null)">
-                <span class="method-badge method-GET">GET</span> Current User Profile
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/auth/logout', null)">
-                <span class="method-badge method-POST">POST</span> Auth Logout
-            </div>
-
-            <div class="nav-group-title">Job Discovery</div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/jobs?keyword=Engineering&is_remote=true', null)">
-                <span class="method-badge method-GET">GET</span> Search Jobs (Remote)
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/jobs', null)">
-                <span class="method-badge method-GET">GET</span> List All Jobs (Paginated)
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/company/jobs', samplePayloads.postJob)">
-                <span class="method-badge method-POST">POST</span> Company Post Job
+            <div class="text-xs uppercase tracking-wider text-gray-400 mb-3">Authentication & User</div>
+            <div class="space-y-1">
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/auth/login', samplePayloads.login)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Auth Login
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/auth/register', samplePayloads.register)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Register Student
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/auth/me', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> Current User Profile
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/auth/logout', null)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Auth Logout
+                </div>
             </div>
 
-            <div class="nav-group-title">Student Portal</div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/students/me', null)">
-                <span class="method-badge method-GET">GET</span> Student Profile
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/students/me/applications', null)">
-                <span class="method-badge method-GET">GET</span> My Applications
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/students/me/skills', samplePayloads.addSkill)">
-                <span class="method-badge method-POST">POST</span> Add Skill to Profile
-            </div>
-
-            <div class="nav-group-title">Applications & Interviews</div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/applications', samplePayloads.applyJob)">
-                <span class="method-badge method-POST">POST</span> Submit Application
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/applications', null)">
-                <span class="method-badge method-GET">GET</span> List Applications
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/applications/{app_id}/interviews', samplePayloads.scheduleInterview)">
-                <span class="method-badge method-POST">POST</span> Schedule Interview Round
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('PUT', '/api/v1/interviews/{int_id}', samplePayloads.updateInterview)">
-                <span class="method-badge method-PUT">PUT</span> Update Round Result (Final)
+            <div class="text-xs uppercase tracking-wider text-indigo-400 mb-3 mt-4 border-b border-gray-700 pb-2">Job Discovery</div>
+            <div class="space-y-1">
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/jobs?keyword=Engineering&is_remote=true', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> Search Jobs (Remote)
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/jobs', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> List All Jobs (Paginated)
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/company/jobs', samplePayloads.postJob)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Company Post Job
+                </div>
             </div>
 
-            <div class="nav-group-title">Company Verification</div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/companies/{company_id}/verification', samplePayloads.requestVerification)">
-                <span class="method-badge method-POST">POST</span> Request Verification
+            <div class="text-xs uppercase tracking-wider text-green-400 mb-3 mt-4 border-b border-gray-700 pb-2">Student Portal</div>
+            <div class="space-y-1">
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/students/me', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> Student Profile
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/students/me/applications', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> My Applications
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/students/me/skills', samplePayloads.addSkill)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Add Skill to Profile
+                </div>
             </div>
 
-            <div class="nav-group-title">Admin Console</div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/admin/dashboard', null)">
-                <span class="method-badge method-GET">GET</span> Admin Dashboard Metrics
+            <div class="text-xs uppercase tracking-wider text-purple-400 mb-3 mt-4 border-b border-gray-700 pb-2">Applications & Interviews</div>
+            <div class="space-y-1">
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/applications', samplePayloads.applyJob)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Submit Application
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/applications', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> List Applications
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/applications/{app_id}/interviews', samplePayloads.scheduleInterview)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Schedule Interview Round
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('PUT', '/api/v1/interviews/{int_id}', samplePayloads.updateInterview)">
+                    <span class="method-badge method-PUT inline-block px-2 py-0.5 rounded text-xs font-medium">PUT</span> Update Round Result (Final)
+                </div>
             </div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/admin/company-verifications', null)">
-                <span class="method-badge method-GET">GET</span> Pending Verifications
+
+            <div class="text-xs uppercase tracking-wolder text-orange-400 mb-3 mt-4 border-b border-gray-700 pb-2">Company Verification</div>
+            <div class="space-y-1">
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/companies/{company_id}/verification', samplePayloads.requestVerification)">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Request Verification
+                </div>
             </div>
-            <div class="nav-item" onclick="loadEndpoint('POST', '/api/v1/admin/ingest-external-jobs', {source: 'sample_external_feed'})">
-                <span class="method-badge method-POST">POST</span> Run External Job Aggregator
-            </div>
-            <div class="nav-item" onclick="loadEndpoint('GET', '/api/v1/admin/logs', null)">
-                <span class="method-badge method-GET">GET</span> View Admin Audit Logs
+
+            <div class="text-xs uppercase tracking-wider text-red-400 mb-3 mt-4 border-b border-gray-700 pb-2">Admin Console</div>
+            <div class="space-y-1">
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/admin/dashboard', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> Admin Dashboard Metrics
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/admin/company-verifications', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> Pending Verifications
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('POST', '/api/v1/admin/ingest-external-jobs', {source: 'sample_external_feed'})">
+                    <span class="method-badge method-POST inline-block px-2 py-0.5 rounded text-xs font-medium">POST</span> Run External Job Aggregator
+                </div>
+                <div class="px-3 py-2 rounded-md hover:bg-gray-700 cursor-pointer" onclick="loadEndpoint('GET', '/api/v1/admin/logs', null)">
+                    <span class="method-badge method-GET inline-block px-2 py-0.5 rounded text-xs font-medium">GET</span> View Admin Audit Logs
+                </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Main Workspace -->
-    <div class="main-workspace">
+    <!-- Workspace -->
+    <div class="flex-1 flex flex-col bg-gray-900">
+
         
-        <!-- Top Request Bar -->
-        <div class="top-bar">
-            <div class="endpoint-selector">
-                <select id="request-method" class="method-select">
-                    <option value="GET">GET</option>
-                    <option value="POST">POST</option>
-                    <option value="PUT">PUT</option>
-                    <option value="DELETE">DELETE</option>
-                </select>
-                <input type="text" id="request-url" class="url-input" value="/api/v1/jobs">
+        <div class="p-4 border-b border-gray-700 bg-gray-800">
+            <div class="flex items-center gap-3 max-w-6xl">
+                <div class="endpoint-selector flex items-center gap-2 flex-1">
+                    <select id="request-method" class="method-select rounded-md px-3 py-2 bg-gray-700 text-white font-medium">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                    <input type="text" id="request-url" class="url-input rounded-md flex-1 bg-gray-700 text-gray-100 px-3 py-2 font-mono text-sm" value="/api/v1/jobs">
+                </div>
+                <button class="btn-send rounded-md px-4 py-2 font-medium text-white" onclick="sendApiRequest()">
+                    ▶ Run Request
+                </button>
             </div>
-            <button class="btn-send" onclick="sendApiRequest()">
-                ▶ Run Request
-            </button>
         </div>
 
-        <!-- Split Pane: Request Payload | Response Viewer -->
-        <div class="workspace-split">
-            <div class="pane">
-                <div class="pane-header">
-                    <span>JSON REQUEST BODY</span>
-                    <span style="font-size: 0.7rem; color: #64748b;">(Optional for GET)</span>
-                </div>
-                <div class="editor-container">
-                    <textarea id="request-body" class="json-editor" placeholder="Enter JSON request payload..."></textarea>
-                </div>
-            </div>
+        <!-- Request / response -->
+        <div class="p-4 flex-1 flex flex-col bg-gray-800 overflow-hidden">
+            <div class="workspace-split grid grid-cols-1 lg:grid-cols-2 gap-1">
 
-            <div class="pane">
-                <div class="pane-header">
-                    <span>RESPONSE OUTPUT</span>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span id="response-status" class="response-status status-200" style="display: none;">STATUS</span>
-                        <span id="response-time" class="time-badge"></span>
+                <div class="pane">
+                    <div class="pane-header px-4 py-3 border-b border-gray-700 text-xs uppercase tracking-wider font-medium text-gray-400">
+                        <span>JSON REQUEST BODY</span>
+                        <span class="text-gray-500 text-xs ml-2">(Optional for GET)</span>
+                    </div>
+                    <div class="editor-container rounded-md p-4 bg-gray-700 overflow-auto">
+                        <textarea id="request-body" class="json-editor w-full bg-gray-800 text-gray-100 font-mono font-small py-3 leading-relaxed resize-none" placeholder="Enter JSON request payload..."></textarea>
                     </div>
                 </div>
-                <pre id="response-body" class="response-viewer">Click "Run Request" to execute an API endpoint.</pre>
+
+                <div class="pane">
+                    <div class="pane-header px-4 py-3 border-b border-gray-700 text-xs uppercase tracking-wider font-medium text-gray-400">
+                        <span>RESPONSE OUTPUT</span>
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span id="response-status" class="response-status d-none px-2 py-0.5 rounded text-xs">STATUS</span>
+                            <span id="response-time" class="time-badge bg-gray-700 px-2 py-0.5 rounded text-xs"></span>
+                        </div>
+                    </div>
+                    <pre id="response-body" class="response-viewer rounded-md p-4 bg-gray-800 font-mono font-small text-blue-400 overflow-auto whitespace-pre-wrap"></pre>
+                </div>
+
             </div>
         </div>
 
@@ -539,18 +232,20 @@
                 label.innerText = currentUserEmail || 'Token Set';
                 label.style.color = '#34d399';
                 dot.classList.add('active');
+                dot.classList.remove('opacity-50');
             } else {
                 label.innerText = 'Not Logged In';
-                label.style.color = '#94a3b8';
+                label.style.color = '#78716c';
                 dot.classList.remove('active');
+                dot.classList.add('opacity-50');
             }
         }
 
-        async function quickLogin(email, password) {
+        function quickLogin(email, password) {
             document.getElementById('request-method').value = 'POST';
             document.getElementById('request-url').value = '/api/v1/auth/login';
             document.getElementById('request-body').value = JSON.stringify({ email, password }, null, 2);
-            await sendApiRequest();
+            sendApiRequest();
         }
 
         function loadEndpoint(method, url, payload) {
@@ -602,9 +297,10 @@
                 const data = await res.json();
 
                 statusBadge.innerText = `${res.status} ${res.statusText}`;
-                statusBadge.className = `response-status status-${res.status}`;
+                statusBadge.className = `response-status status-${res.status} inline-block px-2 py-0.5 rounded text-xs`;
                 statusBadge.style.display = 'inline-block';
                 timeBadge.innerText = `${duration} ms`;
+                timeBadge.className = `response-status status-${res.status} bg-gray-700 px-2 py-0.5 rounded text-xs inline-block`;
 
                 responseViewer.innerText = JSON.stringify(data, null, 2);
 
@@ -622,7 +318,6 @@
         }
 
         updateAuthUI();
-        // Load default endpoint
         loadEndpoint('GET', '/api/v1/jobs', null);
     </script>
 </body>
