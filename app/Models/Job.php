@@ -29,6 +29,7 @@ class Job extends Model
         'skills_required',
         'job_url',
         'source_job_id',
+        'metadata',
         'is_active',
         'posted_at',
     ];
@@ -36,6 +37,7 @@ class Job extends Model
     protected $casts = [
         'is_remote' => 'boolean',
         'is_active' => 'boolean',
+        'metadata' => 'array',
         'deadline' => 'datetime',
         'posted_at' => 'datetime',
     ];

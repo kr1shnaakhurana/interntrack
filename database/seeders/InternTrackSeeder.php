@@ -75,10 +75,8 @@ class InternTrackSeeder extends Seeder
         // ────────────────────────────────────────────────────────────────────
         // 3. JOB SOURCES
         // ────────────────────────────────────────────────────────────────────
-        $directSource = JobSource::firstOrCreate(
-            ['name' => 'InternTrack Direct'],
-            ['type' => 'direct', 'is_active' => true]
-        );
+        $this->call(JobSourceSeeder::class);
+        $directSource = JobSource::where('name', 'InternTrack Direct')->first();
         $linkedinSource = JobSource::firstOrCreate(
             ['name' => 'LinkedIn Jobs'],
             ['type' => 'external', 'base_url' => 'https://linkedin.com/jobs', 'is_active' => true]
@@ -87,10 +85,7 @@ class InternTrackSeeder extends Seeder
             ['name' => 'Internshala'],
             ['type' => 'external', 'base_url' => 'https://internshala.com', 'is_active' => true]
         );
-        $govtSource = JobSource::firstOrCreate(
-            ['name' => 'Govt Jobs Portal'],
-            ['type' => 'external', 'base_url' => 'https://sarkari.gov.in', 'is_active' => true]
-        );
+        $govtSource = JobSource::where('adapter_key', 'government_rss')->first();
 
         // ────────────────────────────────────────────────────────────────────
         // 4. COMPANIES
@@ -443,7 +438,7 @@ class InternTrackSeeder extends Seeder
         $extJob1 = Job::create([
             'company_id'     => $extCompanyGoogle->id,
             'source_id'      => $linkedinSource->id,
-            'source_job_id'  => 'goog-swe-intern-2024-blr',
+            'source_job_id'  => 'goog-swe-intern-2026-blr',
             'title'          => 'Software Engineering Intern – Google STEP',
             'description'    => "Google's STEP Internship Program is a 12-week paid internship for first and second-year undergraduate students with a passion for software engineering.\n\n**What you'll do:**\n- Code, test and launch features used by billions of users\n- Work with a Google mentor and buddy\n- Present your project at the end of internship\n\n**Minimum Qualifications:**\n- Currently enrolled in a Bachelor's programme in CS or related\n- Programming experience in Java, Python, C++ or Go\n- Returning to school after the internship",
             'job_type'       => 'internship',
@@ -452,7 +447,7 @@ class InternTrackSeeder extends Seeder
             'stipend_salary' => '₹1,20,000 / month',
             'deadline'       => now()->addDays(60),
             'skills_required'=> 'Java, Python, Go, Algorithms, Data Structures',
-            'job_url'        => 'https://careers.google.com/jobs/results/step-intern-2024',
+            'job_url'        => 'https://careers.google.com/jobs/results/step-intern-2026',
             'is_active'      => true,
             'posted_at'      => now()->subDays(7),
         ]);
@@ -463,16 +458,16 @@ class InternTrackSeeder extends Seeder
         $extJob2 = Job::create([
             'company_id'     => $extCompanyTCS->id,
             'source_id'      => $internshalaSource->id,
-            'source_job_id'  => 'tcs-smart-hiring-2024',
+            'source_job_id'  => 'tcs-smart-hiring-2026',
             'title'          => 'TCS Smart Hiring – Graduate Trainee',
-            'description'    => "TCS Smart Hiring is a structured onboarding programme for fresh graduates joining TCS as Trainee Engineers.\n\n**Training:**\n- 10-week paid foundation training at TCS iON\n- Technology tracks: Java Full Stack, Python, Cloud Native\n- Soft skills and AGILE methodology training\n\n**Eligibility:**\n- B.E./B.Tech 2024 pass-out with 60% aggregate\n- No active backlogs\n- Available for pan-India posting",
+            'description'    => "TCS Smart Hiring is a structured onboarding programme for fresh graduates joining TCS as Trainee Engineers.\n\n**Training:**\n- 10-week paid foundation training at TCS iON\n- Technology tracks: Java Full Stack, Python, Cloud Native\n- Soft skills and AGILE methodology training\n\n**Eligibility:**\n- B.E./B.Tech 2026 pass-out with 60% aggregate\n- No active backlogs\n- Available for pan-India posting",
             'job_type'       => 'full-time',
             'location'       => 'Pan India',
             'is_remote'      => false,
             'stipend_salary' => '₹3.6 – 7 LPA',
             'deadline'       => now()->addDays(40),
             'skills_required'=> 'Java, Python, SQL, Communication',
-            'job_url'        => 'https://tcs.com/careers/smart-hiring-2024',
+            'job_url'        => 'https://tcs.com/careers/smart-hiring-2026',
             'is_active'      => true,
             'posted_at'      => now()->subDays(10),
         ]);
@@ -482,7 +477,7 @@ class InternTrackSeeder extends Seeder
         $extJob3 = Job::create([
             'company_id'     => $extCompanyISRO->id,
             'source_id'      => $govtSource->id,
-            'source_job_id'  => 'isro-ra-2024-sc-c',
+            'source_job_id'  => 'isro-ra-2026-sc-c',
             'title'          => 'ISRO Research Associate – Space Technology',
             'description'    => "ISRO invites applications for Research Associate positions in the domain of Space Technology and Systems.\n\n**Vacancy:** Research Associate SC-C\n**Pay Level:** 10 (₹56,100 – ₹1,77,500)\n**Posting:** VSSC, Thiruvananthapuram\n\n**Qualification:**\n- M.Tech / M.E. / M.Sc. with First Class\n- Specialisation in Electronics, Computer Science, or Physics\n- Age limit: 35 years as on last date\n\n**Selection:** Written Test + Interview by Board",
             'job_type'       => 'government',
@@ -491,7 +486,7 @@ class InternTrackSeeder extends Seeder
             'stipend_salary' => '₹56,100 – ₹1,77,500 / month (Pay Level 10)',
             'deadline'       => now()->addDays(35),
             'skills_required'=> 'Electronics, Computer Science, Research, Systems Design',
-            'job_url'        => 'https://isro.gov.in/recruitment/2024/ra-sc-c',
+            'job_url'        => 'https://isro.gov.in/recruitment/2026/ra-sc-c',
             'is_active'      => true,
             'posted_at'      => now()->subDays(4),
         ]);
@@ -499,7 +494,7 @@ class InternTrackSeeder extends Seeder
         $extJob4 = Job::create([
             'company_id'     => $extCompanyGoogle->id,
             'source_id'      => $linkedinSource->id,
-            'source_job_id'  => 'goog-ux-researcher-2024',
+            'source_job_id'  => 'goog-ux-researcher-2026',
             'title'          => 'UX Research Intern – Google Assistant',
             'description'    => "Design and conduct user research studies to improve Google Assistant's multimodal experiences.\n\n**Responsibilities:**\n- Plan and run usability tests with diverse user groups\n- Synthesise findings into actionable design recommendations\n- Collaborate with Product Managers and UX Designers\n\n**Qualifications:**\n- Currently enrolled in HCI, Psychology, or Design programme\n- Experience with Figma or equivalent tools\n- Strong written and verbal communication",
             'job_type'       => 'internship',
@@ -508,7 +503,7 @@ class InternTrackSeeder extends Seeder
             'stipend_salary' => '₹85,000 / month',
             'deadline'       => now()->addDays(28),
             'skills_required'=> 'UI/UX, Figma, User Research, Communication',
-            'job_url'        => 'https://careers.google.com/jobs/results/ux-research-intern-2024',
+            'job_url'        => 'https://careers.google.com/jobs/results/ux-research-intern-2026',
             'is_active'      => true,
             'posted_at'      => now()->subDays(6),
         ]);
@@ -527,7 +522,7 @@ class InternTrackSeeder extends Seeder
             'stipend_salary' => '₹20,000 / month',
             'deadline'       => now()->addDays(18),
             'skills_required'=> 'Python, Data Analysis, SQL, Excel',
-            'job_url'        => 'https://internshala.com/internship/tcs-data-analytics-2024',
+            'job_url'        => 'https://internshala.com/internship/tcs-data-analytics-2026',
             'is_active'      => true,
             'posted_at'      => now()->subDays(9),
         ]);

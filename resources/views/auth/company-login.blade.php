@@ -1,73 +1,70 @@
 @extends('layouts.app')
 
-@section('title', 'Company Login - InternTrack')
+@section('title', 'Employer Sign In - InternTrack')
 
 @section('content')
-<div class="auth-form container w-100">
-    <div class="auth-card p-4 p-md-5">
-        <div class="text-center mb-4">
-            <h2 class="page-title text-dark fw-bold mb-1">Company Login</h2>
-            <p class="text-muted mb-0">Access your company dashboard</p>
-        </div>
-
-        <form action="/company/login" method="POST">
-            @csrf
-
-            @if(session('status'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 border-0 py-2 px-3 mb-4" role="alert">
-                    <small>{{ session('status') }}</small>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+<div class="row justify-content-center py-4 py-md-5">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        <div class="card p-4">
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white fw-bold mb-2" style="width: 32px; height: 32px; border-radius: 4px; font-size: 15px;">
+                    IT
                 </div>
-            @endif
-
-            @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0 py-2 px-3 mb-4" role="alert">
-                    <small>{{ $errors->first() }}</small>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            <div class="mb-3">
-                <label for="email" class="form-label small fw-semibold text-dark mb-1">Email Address</label>
-                <input type="email" class="form-control rounded-3" id="email" name="email" value="{{ old('email') }}" required placeholder="">
+                <h1 class="page-title fs-5 mb-1">Employer Portal</h1>
+                <p class="text-muted small mb-0">Sign in to manage company jobs and applicants</p>
             </div>
 
-            <div class="mb-4">
-                <label for="password" class="form-label small fw-semibold text-dark mb-1">Password</label>
-                <input type="password" class="form-control rounded-3" id="password" name="password" required placeholder="">
-            </div>
+            <form action="/company/login" method="POST">
+                @csrf
 
-            <div class="mb-4 d-flex justify-content-between align-items-center">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                    <label class="form-check-label small text-secondary" for="remember">Remember me</label>
+                @if(session('status'))
+                    <div class="alert alert-success py-2 px-3 mb-3">
+                        <small>{{ session('status') }}</small>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-danger py-2 px-3 mb-3">
+                        <small>{{ $errors->first() }}</small>
+                    </div>
+                @endif
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Corporate Email Address</label>
+                    <input type="email" class="form-control form-control-sm" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="hr@company.com">
                 </div>
-                <a href="/forgot-password" class="small text-primary text-decoration-none fw-medium">Forgot password?</a>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="password" class="form-label mb-0">Password</label>
+                        <a href="/forgot-password" class="small text-muted text-decoration-none" style="font-size: 11.5px;">Forgot password?</a>
+                    </div>
+                    <input type="password" class="form-control form-control-sm" id="password" name="password" required placeholder="••••••••">
+                </div>
+
+                <div class="mb-4">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label small" for="remember">Keep me signed in</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">
+                    Sign In to Portal
+                </button>
+            </form>
+
+            <div class="text-center pt-3 border-top">
+                <span class="text-muted small">New organization?</span>
+                <a href="/register" class="small fw-semibold ms-1">Register Company</a>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold mb-4">
-                Sign In
-            </button>
-        </form>
-
-        <div class="text-center">
-            <span class="text-secondary">Don't have an account?</span>
-            <a href="/register" class="text-primary text-decoration-none fw-semibold ms-1 text-nowrap">Create Company Account</a>
+            <div class="text-center mt-2">
+                <a href="/login" class="text-muted small text-decoration-none">
+                    <i class="bi bi-person me-1"></i> Student Candidate Sign In &rarr;
+                </a>
+            </div>
         </div>
     </div>
 </div>
 @endsection
-
-@push('styles')
-<style>
-    :root {
-        --navy: #0f172a;
-        --navy-light: #1e293b;
-        --slate-muted: #64748b;
-    }
-    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
-    .navbar-brand { font-weight: 800; font-size: 1.5rem; color: var(--navy) !important; }
-    .auth-form { max-width: 480px; }
-    .auth-card { background: #fff; border: 1px solid var(--border-color); border-radius: 1rem; box-shadow: var(--shadow-sm); }
-</style>
-@endpush

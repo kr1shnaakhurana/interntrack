@@ -3,70 +3,77 @@
 @section('title', 'Interview Schedule - InternTrack')
 
 @section('content')
-<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
-    <h1 class="page-title">Interview Schedule</h1>
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+    <div>
+        <h1 class="page-title">Interview Schedule</h1>
+        <p class="text-muted small mb-0">Scheduled interview rounds, technical assessments, and panel discussions.</p>
+    </div>
+    <a href="/applications" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-journal-check"></i> View Applications
+    </a>
 </div>
 
-<div class="card border-0 shadow-sm">
+<div class="table-container mb-4">
     <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead class="table-light">
+        <table class="table table-hover align-middle">
+            <thead>
                 <tr>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Round</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Job Title</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Company</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Type</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Date &amp; Time</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Result</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Meeting Link</th>
+                    <th>Round</th>
+                    <th>Opportunity</th>
+                    <th>Employer</th>
+                    <th>Format</th>
+                    <th>Scheduled Date &amp; Time</th>
+                    <th>Result</th>
+                    <th class="text-end">Meeting Link</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($interviews as $interview)
                     <tr>
-                        <td class="px-4 py-4">
-                            <span class="fw-semibold">Round {{ $interview->round_number }}</span>
-                            <small class="d-block text-muted">{{ $interview->round_name }}</small>
+                        <td>
+                            <span class="fw-semibold text-dark">Round {{ $interview->round_number }}</span>
+                            <div class="text-muted small">{{ $interview->round_name }}</div>
                         </td>
-                        <td class="px-4 py-4">
-                            <a href="/applications/{{ $interview->application_id }}" class="fw-bold text-dark text-decoration-none">
+                        <td>
+                            <a href="/applications/{{ $interview->application_id }}" class="fw-semibold text-dark text-decoration-none">
                                 {{ $interview->application->job->title ?? 'Position' }}
                             </a>
                         </td>
-                        <td class="px-4 py-4 fw-medium text-secondary">{{ $interview->application->job->company->name ?? 'Company' }}</td>
-                        <td class="px-4 py-4">
-                            <span class="badge bg-light text-dark rounded-pill px-3 py-2 small">{{ ucfirst($interview->interview_type) }}</span>
+                        <td>
+                            <span class="text-secondary">{{ $interview->application->job->company->name ?? 'Company' }}</span>
                         </td>
-                        <td class="px-4 py-4 small text-muted">
+                        <td>
+                            <span class="badge badge-subtle-neutral text-capitalize">{{ $interview->interview_type }}</span>
+                        </td>
+                        <td class="small text-muted">
                             {{ $interview->scheduled_at ? \Carbon\Carbon::parse($interview->scheduled_at)->format('M d, Y h:i A') : 'TBD' }}
                         </td>
-                        <td class="px-4 py-4">
+                        <td>
                             <x-status-badge :status="$interview->result" />
                         </td>
-                        <td class="px-4 py-4">
+                        <td class="text-end">
                             @if($interview->location_meeting_link)
-                                <a href="{{ $interview->location_meeting_link }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-4">
-                                    <i class="bi bi-box-arrow-up-right me-1"></i> Join
+                                <a href="{{ $interview->location_meeting_link }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-box-arrow-up-right"></i> Join Link
                                 </a>
                             @else
-                                <span class="text-muted small">N/A</span>
+                                <span class="text-muted small">—</span>
                             @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
                         <td colspan="7" class="text-center py-5">
-                            <x-empty-state title="No Scheduled Interviews" message="You will see your interview rounds here once shortlisted by employers." icon="bi-calendar-event" />
+                            <x-empty-state title="No Scheduled Interviews" message="You do not have any pending or completed interview rounds yet." icon="bi-calendar-event">
+                                <div class="mt-3">
+                                    <a href="/jobs" class="btn btn-primary btn-sm">Explore Opportunities</a>
+                                </div>
+                            </x-empty-state>
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    @if($interviews->hasPages())
-        <div class="card-footer bg-white border-0 py-3">
-            <x-pagination :paginator="$interviews" />
-        </div>
-    @endif
 </div>
 @endsection

@@ -18,10 +18,14 @@ class RoleMiddleware
         $user = $request->user();
 
         if (! $user || ! $user->is_active || ! in_array($user->role, $roles)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized. Insufficient permissions for this operation.',
-            ], Response::HTTP_FORBIDDEN);
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized. Insufficient permissions for this operation.',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            abort(Response::HTTP_FORBIDDEN, 'Unauthorized. Insufficient permissions for this operation.');
         }
 
         return $next($request);

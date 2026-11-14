@@ -14,13 +14,23 @@ class JobSource extends Model
     protected $fillable = [
         'name',
         'type',
+        'adapter_key',
         'base_url',
         'api_endpoint',
+        'auth_type',
+        'config',
+        'field_mapping',
         'is_active',
+        'last_fetched_at',
+        'last_fetch_status',
+        'last_fetch_error',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'config' => 'array',
+        'field_mapping' => 'array',
+        'last_fetched_at' => 'datetime',
     ];
 
     public function jobs(): HasMany

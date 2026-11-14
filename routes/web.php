@@ -29,11 +29,21 @@ Route::get('/jobs/{id}', [WebJobController::class, 'show'])->name('jobs.show');
 
 // ─── AUTH ROUTES ─────────────────────────────────────────────────────────────
 
+// Redirect legacy /company/login to the shared login form
+Route::redirect('/company/login', '/login', 301);
+
 Route::middleware('guest')->group(function () {
+    // Shared login for all roles
     Route::get('/login', [WebAuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [WebAuthController::class, 'login'])->name('login.post');
+
+    // Student / job seeker registration
     Route::get('/register', [WebAuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [WebAuthController::class, 'register'])->name('register.post');
+
+    // Employer / company registration (dedicated)
+    Route::get('/company/register', [WebAuthController::class, 'showCompanyRegister'])->name('company.register');
+    Route::post('/company/register', [WebAuthController::class, 'registerCompany'])->name('company.register.post');
 });
 
 Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -81,7 +91,7 @@ Route::middleware(['auth'])->prefix('company')->name('company.')->group(function
 
 // ─── ADMIN CONSOLE ROUTES ────────────────────────────────────────────────────
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [WebAdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/verifications', [WebAdminController::class, 'verifications'])->name('verifications');
     Route::post('/verifications/{id}/approve', [WebAdminController::class, 'approveVerification'])->name('verifications.approve');
@@ -91,6 +101,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/users', [WebAdminController::class, 'users'])->name('users');
     Route::get('/logs', [WebAdminController::class, 'logs'])->name('logs');
     Route::post('/aggregator', [WebAdminController::class, 'runAggregator'])->name('aggregator');
+
+    // Job Sources Management
+    Route::get('/job-sources', [\App\Http\Controllers\Web\WebJobSourceController::class, 'index'])->name('job-sources.index');
+    Route::post('/job-sources', [\App\Http\Controllers\Web\WebJobSourceController::class, 'store'])->name('job-sources.store');
+    Route::put('/job-sources/{id}', [\App\Http\Controllers\Web\WebJobSourceController::class, 'update'])->name('job-sources.update');
+    Route::post('/job-sources/{id}/toggle', [\App\Http\Controllers\Web\WebJobSourceController::class, 'toggle'])->name('job-sources.toggle');
+    Route::post('/job-sources/{id}/sync', [\App\Http\Controllers\Web\WebJobSourceController::class, 'sync'])->name('job-sources.sync');
 });
 
 // ─── DEV TOOLS (kept for development convenience) ────────────────────────────

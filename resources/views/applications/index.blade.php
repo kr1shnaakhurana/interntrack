@@ -4,65 +4,77 @@
 
 @section('content')
 <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-    <h1 class="page-title">My Applications</h1>
-    <a href="/jobs" class="btn btn-primary rounded-pill px-4"><i class="bi bi-plus-circle me-1"></i> Browse Jobs</a>
+    <div>
+        <h1 class="page-title">Candidate Applications</h1>
+        <p class="text-muted small mb-0">Track application stages, reviews, and scheduled interview rounds.</p>
+    </div>
+    <a href="/jobs" class="btn btn-primary btn-sm">
+        <i class="bi bi-briefcase"></i> Browse Opportunities
+    </a>
 </div>
 
-<div class="card border-0 shadow-sm">
+<div class="table-container mb-4">
     <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-            <thead class="table-light">
+        <table class="table table-hover align-middle">
+            <thead>
                 <tr>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Job Title</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Company</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Status</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Applied Date</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Next Interview</th>
-                    <th class="fw-semibold text-secondary small text-uppercase text-nowrap px-4 py-3">Actions</th>
+                    <th>Job Position</th>
+                    <th>Employer</th>
+                    <th>Status</th>
+                    <th>Submission Date</th>
+                    <th>Upcoming Round</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($applications as $app)
                     <tr>
-                        <td class="px-4 py-4">
-                            <a href="/applications/{{ $app->id }}" class="fw-bold text-dark text-decoration-none">{{ $app->job->title }}</a>
+                        <td>
+                            <a href="/applications/{{ $app->id }}" class="fw-semibold text-dark text-decoration-none">
+                                {{ $app->job->title }}
+                            </a>
                         </td>
-                        <td class="px-4 py-4">
-                            <span class="fw-medium text-secondary">{{ $app->job->company->name ?? 'External Company' }}</span>
+                        <td>
+                            <span class="text-secondary">{{ $app->job->company->name ?? 'External Company' }}</span>
                             @if(($app->job->company->latestVerification->status ?? '') === 'approved')
-                                <i class="bi bi-patch-check-fill text-primary ms-1" title="Verified"></i>
+                                <i class="bi bi-patch-check-fill text-primary ms-1" title="Verified Employer"></i>
                             @endif
                         </td>
-                        <td class="px-4 py-4">
+                        <td>
                             <x-status-badge :status="$app->status" />
                         </td>
-                        <td class="px-4 py-4 small text-muted">{{ $app->created_at->format('M d, Y') }}</td>
-                        <td class="px-4 py-4">
+                        <td class="text-muted small">{{ $app->created_at->format('M d, Y') }}</td>
+                        <td>
                             @php $nextInterview = $app->interviews->where('result', 'pending')->first(); @endphp
                             @if($nextInterview)
-                                <span class="badge bg-primary-light text-primary rounded-pill px-3 py-2 small">
-                                    <i class="bi bi-calendar me-1"></i> {{ $nextInterview->round_name }} ({{ \Carbon\Carbon::parse($nextInterview->scheduled_at)->format('M d') }})
+                                <span class="badge badge-subtle-primary">
+                                    <i class="bi bi-calendar3"></i> {{ $nextInterview->round_name }} ({{ \Carbon\Carbon::parse($nextInterview->scheduled_at)->format('M d') }})
                                 </span>
                             @else
-                                <span class="text-muted">—</span>
+                                <span class="text-muted small">—</span>
                             @endif
                         </td>
-                        <td class="px-4 py-4">
-                            <a href="/applications/{{ $app->id }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">View Timeline</a>
+                        <td class="text-end">
+                            <a href="/applications/{{ $app->id }}" class="btn btn-outline-secondary btn-sm">
+                                View Timeline
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
                         <td colspan="6" class="text-center py-5">
-                            <x-empty-state title="No Applications Submitted" message="Start applying for open internship and job opportunities." icon="bi-journal-check" />
+                            <x-empty-state title="No Applications Submitted" message="You have not applied for any roles yet. Explore open internships to start." icon="bi-journal-check">
+                                <div class="mt-3">
+                                    <a href="/jobs" class="btn btn-primary btn-sm">Browse Opportunities</a>
+                                </div>
+                            </x-empty-state>
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    <div class="card-footer bg-white border-0 py-3">
-        <x-pagination :paginator="$applications" />
-    </div>
 </div>
+
+<x-pagination :paginator="$applications" />
 @endsection

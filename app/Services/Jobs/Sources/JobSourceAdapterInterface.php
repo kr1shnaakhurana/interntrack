@@ -10,9 +10,14 @@ interface JobSourceAdapterInterface
     public function getSourceIdentifier(): string;
 
     /**
+     * Get human-readable display name for this source adapter.
+     */
+    public function getSourceName(): string;
+
+    /**
      * Fetch raw job items from the external source feed/API.
      */
-    public function fetchJobs(): array;
+    public function fetchJobs(array $options = []): array;
 
     /**
      * Normalize a single raw external item into a standard associative array DTO.

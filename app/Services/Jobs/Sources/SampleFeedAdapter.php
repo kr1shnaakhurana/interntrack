@@ -9,7 +9,12 @@ class SampleFeedAdapter implements JobSourceAdapterInterface
         return 'sample_external_feed';
     }
 
-    public function fetchJobs(): array
+    public function getSourceName(): string
+    {
+        return 'Sample External Feed (Mock Demo)';
+    }
+
+    public function fetchJobs(array $options = []): array
     {
         // Simulated permitted external feed payload
         return [

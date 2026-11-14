@@ -1,59 +1,71 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Company Applicants - InternTrack')
-@section('page_title', 'All Applicants')
+@section('page_title', 'Candidate Applications')
 
 @section('content')
-<div class="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+    <div>
+        <p class="text-muted small mb-0">Review candidate profiles, resume submissions, and interview progression for your organization's roles.</p>
+    </div>
+    <div class="text-muted small">
+        Showing <strong class="text-dark">{{ $applications->total() }}</strong> total candidate submissions
+    </div>
+</div>
+
+<div class="table-container mb-4">
     <div class="table-responsive">
-        <table class="w-full rounded-lg overflow-auto border border-gray-200">
-            <thead class="table-light">
+        <table class="table table-hover align-middle">
+            <thead>
                 <tr>
-                    <th>Candidate Name</th>
-                    <th>Job Position</th>
-                    <th>Application Status</th>
-                    <th>Applied Date</th>
+                    <th>Candidate</th>
+                    <th>Opportunity</th>
+                    <th>Status</th>
+                    <th>Submission Date</th>
                     <th>Interviews</th>
-                    <th>Resume</th>
+                    <th class="text-end">Resume</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($applications as $app)
                     <tr>
                         <td>
-                            <div class="font-bold text-gray-900">{{ $app->student->user->name ?? 'Candidate' }}</div>
-                            <div class="small text-gray-500">{{ $app->student->program ?? '' }}</div>
+                            <div class="fw-semibold text-dark">{{ $app->student->user->name ?? 'Candidate' }}</div>
+                            <div class="text-muted small">{{ $app->student->program ?? $app->student->user->email ?? '' }}</div>
                         </td>
                         <td>
-                            <a href="/jobs/{{ $app->job->id }}" class="font-semibold text-gray-900 text-decoration-none">{{ $app->job->title }}</a>
+                            <a href="/jobs/{{ $app->job->id }}" class="fw-semibold text-dark text-decoration-none">
+                                {{ $app->job->title }}
+                            </a>
                         </td>
                         <td><x-status-badge :status="$app->status" /></td>
                         <td class="text-muted small">{{ $app->created_at->format('M d, Y') }}</td>
                         <td>
-                            <span class="bg-indigo-100 text-indigo-800 rounded-pill px-2 py-1 text-xs border border-indigo-100">{{ $app->interviews->count() }} round(s)</span>
+                            <span class="badge badge-subtle-primary">
+                                {{ $app->interviews->count() }} round(s)
+                            </span>
                         </td>
-                        <td>
+                        <td class="text-end">
                             @if($app->cover_letter_url)
-                                <a href="{{ $app->cover_letter_url }}" target="_blank" class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium">
-                                    <i class="bi bi-file-earmark-pdf me-1"></i> View
+                                <a href="{{ $app->cover_letter_url }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-file-earmark-pdf"></i> View Resume
                                 </a>
                             @else
-                                <span class="text-gray-400 small">Not uploaded</span>
+                                <span class="text-muted small">Not provided</span>
                             @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-gray-400 py-4">
-                            <x-empty-state title="No Applicants Yet" message="Applicants will appear here once candidates apply to your job postings." />
+                        <td colspan="6" class="text-center py-5">
+                            <x-empty-state title="No Applicants Yet" message="Candidate submissions will appear here once candidates apply to your job postings." icon="bi-people" />
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    <x-pagination :paginator="$applications" />
 </div>
+
+<x-pagination :paginator="$applications" />
 @endsection
-
-

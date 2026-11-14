@@ -2,44 +2,53 @@
 
 @php
     $val = strtolower($status ?? $type ?? 'default');
-    $badgeClass = 'bg-secondary';
-    $label = ucfirst($val);
+    $badgeClass = 'badge-subtle-neutral';
+    $label = ucfirst(str_replace('_', ' ', $val));
 
     switch ($val) {
         case 'applied':
-            $badgeClass = 'bg-info text-dark';
+            $badgeClass = 'badge-subtle-info';
             break;
         case 'shortlisted':
-            $badgeClass = 'bg-warning text-dark';
+            $badgeClass = 'badge-subtle-warning';
             break;
         case 'interview':
-            $badgeClass = 'bg-primary';
+            $badgeClass = 'badge-subtle-primary';
             break;
         case 'selected':
         case 'approved':
         case 'cleared':
-            $badgeClass = 'bg-success';
+        case 'active':
+            $badgeClass = 'badge-subtle-success';
             break;
         case 'rejected':
-            $badgeClass = 'bg-danger';
+        case 'suspended':
+        case 'inactive':
+            $badgeClass = 'badge-subtle-danger';
             break;
         case 'pending':
-            $badgeClass = 'bg-warning text-dark';
+            $badgeClass = 'badge-subtle-warning';
             break;
         case 'internship':
-            $badgeClass = 'bg-info';
+            $badgeClass = 'badge-subtle-info';
             break;
         case 'full-time':
-            $badgeClass = 'bg-dark';
+            $badgeClass = 'badge-subtle-neutral';
+            break;
+        case 'part-time':
+            $badgeClass = 'badge-subtle-neutral';
             break;
         case 'research':
         case 'fellowship':
-            $badgeClass = 'bg-purple';
+            $badgeClass = 'badge-subtle-primary';
             break;
         case 'government':
-            $badgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
+            $badgeClass = 'badge-subtle-warning';
+            break;
+        default:
+            $badgeClass = 'badge-subtle-neutral';
             break;
     }
 @endphp
 
-<span class="badge {{ $badgeClass }} px-2 py-1 rounded-pill">{{ $label }}</span>
+<span class="badge {{ $badgeClass }}">{{ $label }}</span>

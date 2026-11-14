@@ -1,10 +1,11 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Organisation Verification - InternTrack')
+@section('title', 'Employer Verification - InternTrack')
+@section('page_title', 'Organization Verification')
 
 @section('content')
-<div class="page-header">
-    <h1 class="page-title">Organisation Verification</h1>
+<div class="mb-3">
+    <p class="text-muted small mb-0">Submit organization credentials and legal entity documents to gain verified employer status.</p>
 </div>
 
 @php
@@ -12,41 +13,45 @@
     $status = $latest?->status ?? 'not_submitted';
 @endphp
 
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body p-4 p-md-5">
+<!-- Verification Status Panel -->
+<div class="card mb-4">
+    <div class="card-header py-3">
+        <span class="fw-semibold fs-6 text-dark">Current Verification Status</span>
+    </div>
+    <div class="card-body p-4">
         <div class="d-flex align-items-center gap-3">
             @if($status === 'approved')
-                <div class="bg-success bg-opacity-10 text-success rounded-3 p-3">
-                    <i class="bi bi-patch-check-fill fs-2"></i>
+                <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success" style="width: 40px; height: 40px; border-radius: 4px;">
+                    <i class="bi bi-patch-check-fill fs-5"></i>
                 </div>
                 <div>
-                    <h5 class="fw-bold text-success mb-1">Verified Organisation</h5>
-                    <p class="mb-0 text-muted small">Your organisation is verified. You may publish direct job opportunities.</p>
+                    <div class="fw-semibold text-success fs-6">Verified Organization</div>
+                    <p class="mb-0 text-muted small">Your organization profile has been officially approved. You can post direct opportunities to candidates.</p>
                 </div>
             @elseif($status === 'pending')
-                <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-3">
-                    <i class="bi bi-hourglass-split fs-2"></i>
+                <div class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning" style="width: 40px; height: 40px; border-radius: 4px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
                 </div>
                 <div>
-                    <h5 class="fw-bold text-warning mb-1">Verification Under Review</h5>
-                    <p class="mb-0 text-muted small">Submitted on {{ $latest?->created_at?->format('M d, Y') }}. An admin will review within 2-3 business days.</p>
+                    <div class="fw-semibold text-warning fs-6">Verification Under Review</div>
+                    <p class="mb-0 text-muted small">Submitted on {{ $latest?->created_at?->format('M d, Y') }}. Our administrative team reviews submissions within 2 business days.</p>
                 </div>
             @elseif($status === 'rejected')
-                <div class="bg-danger bg-opacity-10 text-danger rounded-3 p-3">
-                    <i class="bi bi-x-circle-fill fs-2"></i>
+                <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger" style="width: 40px; height: 40px; border-radius: 4px;">
+                    <i class="bi bi-x-circle-fill fs-5"></i>
                 </div>
                 <div>
-                    <h5 class="fw-bold text-danger mb-1">Verification Rejected</h5>
-                    <p class="mb-0 text-muted small">Reason: {{ $latest?->remarks ?? 'See history below.' }}</p>
-                    <small class="text-muted">You may resubmit with updated documentation.</small>
+                    <div class="fw-semibold text-danger fs-6">Verification Rejected</div>
+                    <p class="mb-0 text-muted small">Administrator remarks: {{ $latest?->remarks ?? 'Please review documentation.' }}</p>
+                    <small class="text-secondary">You may resubmit below with rectified documentation.</small>
                 </div>
             @else
-                <div class="bg-secondary bg-opacity-10 text-secondary rounded-3 p-3">
-                    <i class="bi bi-shield-exclamation fs-2"></i>
+                <div class="d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-secondary" style="width: 40px; height: 40px; border-radius: 4px;">
+                    <i class="bi bi-shield-lock fs-5"></i>
                 </div>
                 <div>
-                    <h5 class="fw-bold text-secondary mb-1">Not Yet Verified</h5>
-                    <p class="mb-0 text-muted small">Submit a verification request to unlock job publishing.</p>
+                    <div class="fw-semibold text-dark fs-6">Unverified Profile</div>
+                    <p class="mb-0 text-muted small">Complete the submission form below to unlock direct job publishing on InternTrack.</p>
                 </div>
             @endif
         </div>
@@ -54,64 +59,68 @@
 </div>
 
 @if($status !== 'approved' && $status !== 'pending')
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-4 p-md-5">
-            <h5 class="fw-bold text-secondary mb-4"><i class="bi bi-send text-primary me-2"></i>Submit Verification Request</h5>
+    <div class="card mb-4">
+        <div class="card-header py-3">
+            <span class="fw-semibold fs-6 text-dark">Submit Verification Request</span>
+        </div>
+        <div class="card-body p-4">
             <form action="/company/verification" method="POST">
                 @csrf
                 <div class="mb-3">
-                    <label for="documents_url" class="form-label small fw-medium text-secondary">Document / Evidence URL</label>
-                    <input type="url" name="documents_url" id="documents_url" class="form-control form-control-sm rounded-3" required placeholder="https://drive.google.com/file/... or https://storage.com/cert.pdf">
-                    <div class="form-text text-muted">Link to your registration certificate, GST document, or official letter.</div>
+                    <label for="documents_url" class="form-label">Supporting Document / Evidence Link <span class="text-danger">*</span></label>
+                    <input type="url" name="documents_url" id="documents_url" class="form-control form-control-sm" required placeholder="https://drive.google.com/file/... or https://company.com/reg-doc.pdf">
+                    <div class="text-muted" style="font-size: 11.5px;">Link to your business registration, incorporation certificate, or official university partnership letter.</div>
                 </div>
-                <div class="mb-4">
-                    <label for="remarks" class="form-label small fw-medium text-secondary">Additional Remarks (Optional)</label>
-                    <textarea name="remarks" id="remarks" class="form-control form-control-sm rounded-3" rows="3" placeholder="Briefly describe your organisation and the attached documents..."></textarea>
+                <div class="mb-3">
+                    <label for="remarks" class="form-label">Additional Explanatory Remarks</label>
+                    <textarea name="remarks" id="remarks" class="form-control form-control-sm" rows="3" placeholder="Provide any additional context or contact references..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2">
-                    <i class="bi bi-send me-1"></i> Submit for Review
-                </button>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-send"></i> Submit Verification
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 @endif
 
 @if($verifications->count() > 0)
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4 p-md-5">
-            <h5 class="fw-bold text-secondary mb-4">Verification History</h5>
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
+    <div class="card">
+        <div class="card-header py-3">
+            <span class="fw-semibold fs-6 text-dark">Verification Audit History</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Submitted Date</th>
+                        <th>Reviewed By</th>
+                        <th>Admin Remarks</th>
+                        <th class="text-end">Submitted Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($verifications as $ver)
                         <tr>
-                            <th class="fw-semibold text-secondary small text-uppercase px-4 py-3">Status</th>
-                            <th class="fw-semibold text-secondary small text-uppercase px-4 py-3">Submitted</th>
-                            <th class="fw-semibold text-secondary small text-uppercase px-4 py-3">Reviewed By</th>
-                            <th class="fw-semibold text-secondary small text-uppercase px-4 py-3">Remarks</th>
-                            <th class="fw-semibold text-secondary small text-uppercase px-4 py-3">Documents</th>
+                            <td><x-status-badge :status="$ver->status" /></td>
+                            <td class="small text-muted">{{ $ver->created_at->format('M d, Y') }}</td>
+                            <td class="small text-dark">{{ $ver->reviewer?->name ?? '—' }}</td>
+                            <td class="small text-secondary">{{ $ver->remarks ?? '—' }}</td>
+                            <td class="text-end">
+                                @if($ver->documents_url)
+                                    <a href="{{ $ver->documents_url }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-box-arrow-up-right"></i> View Document
+                                    </a>
+                                @else
+                                    <span class="text-muted small">—</span>
+                                @endif
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($verifications as $ver)
-                            <tr>
-                                <td class="px-4 py-4"><x-status-badge :status="$ver->status" /></td>
-                                <td class="px-4 py-4 small text-muted">{{ $ver->created_at->format('M d, Y') }}</td>
-                                <td class="px-4 py-4 small">{{ $ver->reviewer?->name ?? '—' }}</td>
-                                <td class="px-4 py-4 small text-secondary">{{ $ver->remarks ?? '—' }}</td>
-                                <td class="px-4 py-4">
-                                    @if($ver->documents_url)
-                                        <a href="{{ $ver->documents_url }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                            <i class="bi bi-file-earmark-text me-1"></i> View Docs
-                                        </a>
-                                    @else
-                                        <span class="text-muted small">—</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 @endif
